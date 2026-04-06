@@ -20,27 +20,20 @@ st.set_page_config(
 if 'prediction_history' not in st.session_state:
     st.session_state.prediction_history = []
 
-# ==================== CUSTOM CSS ====================
+# ==================== CUSTOM CSS (FIXED) ====================
 st.markdown("""
 <style>
+    /* Sidebar */
     [data-testid="stSidebar"] {
         background: linear-gradient(135deg, #f97316 0%, #ea580c 100%) !important;
         min-width: 280px !important;
         width: 280px !important;
         flex-shrink: 0 !important;
         display: block !important;
-        visibility: visible !important;
-        opacity: 1 !important;
         border-right: none !important;
     }
     [data-testid="stSidebar"] * {
         color: #1e1e2a !important;
-        visibility: visible !important;
-    }
-    [data-testid="stSidebar"] h1, [data-testid="stSidebar"] h2, [data-testid="stSidebar"] h3,
-    [data-testid="stSidebar"] .stMarkdown {
-        color: #1e1e2a !important;
-        font-weight: 700 !important;
     }
     [data-testid="stSidebar"] .stRadio label {
         color: #1e1e2a !important;
@@ -49,10 +42,6 @@ st.markdown("""
         border-radius: 10px !important;
         margin: 4px 0 !important;
         background-color: rgba(255,255,255,0.25) !important;
-        border: 1px solid rgba(255,255,255,0.3) !important;
-    }
-    [data-testid="stSidebar"] .stRadio label:hover {
-        background-color: rgba(255,255,255,0.45) !important;
     }
     .history-item {
         background: rgba(255,255,255,0.3) !important;
@@ -61,8 +50,9 @@ st.markdown("""
         margin: 0.4rem 0 !important;
         border-radius: 6px !important;
         font-size: 0.7rem !important;
-        color: #1e1e2a !important;
     }
+    
+    /* Header */
     .main-header {
         background: linear-gradient(135deg, #1e3a5f 0%, #2c5282 100%);
         padding: 1.5rem;
@@ -80,30 +70,43 @@ st.markdown("""
         opacity: 0.9;
         font-size: 0.85rem;
     }
-    .card {
-        background-color: #ffffff;
-        border-radius: 16px;
-        padding: 1.2rem;
-        box-shadow: 0 1px 3px rgba(0,0,0,0.08);
-        border: 1px solid #e5e7eb;
-        margin-bottom: 1rem;
+    
+    /* Section Header */
+    .section-header {
+        font-size: 1.2rem;
+        font-weight: 600;
+        color: #1e2a3a;
+        margin: 1.2rem 0 1rem 0;
+        border-left: 4px solid #f97316;
+        padding-left: 0.8rem;
     }
+    
+    /* Portfolio Cards - Fixed */
     .portfolio-card {
         background: #ffffff;
         border-radius: 16px;
         padding: 1rem;
         text-align: center;
         border: 1px solid #e5e7eb;
+        margin: 0.5rem;
+        min-height: 150px;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.05);
         transition: all 0.2s ease;
     }
     .portfolio-card:hover {
         transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
         border-color: #f97316;
     }
+    .portfolio-icon {
+        font-size: 2rem;
+        margin-bottom: 0.3rem;
+    }
     .portfolio-amount {
-        font-size: 1.4rem;
+        font-size: 1.5rem;
         font-weight: 700;
         color: #1e2a3a;
+        margin: 0.5rem 0;
     }
     .portfolio-range {
         font-size: 0.7rem;
@@ -113,25 +116,61 @@ st.markdown("""
         padding: 0.2rem 0.6rem;
         border-radius: 20px;
     }
-    .section-header {
-        font-size: 1.2rem;
-        font-weight: 600;
-        color: #1e2a3a;
-        margin: 1rem 0 0.8rem 0;
-        border-left: 4px solid #f97316;
-        padding-left: 0.8rem;
+    .portfolio-label {
+        font-size: 0.7rem;
+        color: #64748b;
+        margin-top: 0.3rem;
     }
+    
+    /* Feature Cards - Fixed */
     .feature-card {
         background: #f8fafc;
         border-radius: 16px;
         padding: 1rem;
         text-align: center;
         border: 1px solid #e5e7eb;
+        margin: 0.5rem;
+        min-height: 120px;
         transition: all 0.2s ease;
     }
     .feature-card:hover {
         transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.08);
         border-color: #f97316;
+    }
+    .feature-icon {
+        font-size: 1.8rem;
+        margin-bottom: 0.3rem;
+    }
+    .feature-title {
+        font-size: 0.9rem;
+        font-weight: 600;
+        color: #1e2a3a;
+    }
+    .feature-desc {
+        font-size: 0.7rem;
+        color: #64748b;
+    }
+    .feature-metric {
+        font-size: 0.8rem;
+        color: #f97316;
+        margin-top: 0.5rem;
+        font-weight: 600;
+    }
+    
+    /* Common */
+    .card {
+        background-color: #ffffff;
+        border-radius: 16px;
+        padding: 1.2rem;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+        border: 1px solid #e5e7eb;
+        margin-bottom: 1rem;
+    }
+    .custom-divider {
+        height: 1px;
+        background: #e5e7eb;
+        margin: 0.8rem 0;
     }
     .stButton > button {
         background: #f97316;
@@ -149,17 +188,23 @@ st.markdown("""
         color: white;
         padding: 0.8rem 1rem;
         border-radius: 12px;
+        margin: 0.8rem 0;
     }
     .error-message {
         background: #c53030;
         color: white;
         padding: 0.8rem 1rem;
         border-radius: 12px;
-    }
-    .custom-divider {
-        height: 1px;
-        background: #e5e7eb;
         margin: 0.8rem 0;
+    }
+    
+    /* Layout fix for columns */
+    .row-widget.stHorizontal {
+        gap: 0.5rem;
+    }
+    .block-container {
+        padding-top: 0.5rem;
+        padding-bottom: 1rem;
     }
 </style>
 """, unsafe_allow_html=True)
@@ -216,7 +261,7 @@ with st.sidebar:
         label_visibility="visible"
     )
     st.markdown("---")
-    st.markdown(f"**Version:** 4.0 (with Coverage)")
+    st.markdown(f"**Version:** 4.0")
     st.markdown(f"**Updated:** {datetime.now().strftime('%d/%m/%Y')}")
 
 # ==================== HELPER FUNCTIONS ====================
@@ -301,20 +346,23 @@ def dashboard():
     </div>
     """, unsafe_allow_html=True)
     
+    # Portfolio Section
     st.markdown('<div class="section-header">📊 Your Insurance Portfolio</div>', unsafe_allow_html=True)
     portfolio = get_portfolio_values()
-    cols = st.columns(4)
+    cols = st.columns(4, gap="medium")
+    
     for idx, (key, val) in enumerate(portfolio.items()):
         with cols[idx]:
             st.markdown(f"""
             <div class="portfolio-card">
-                <div class="portfolio-icon" style="font-size:2rem">{val['icon']}</div>
+                <div class="portfolio-icon">{val['icon']}</div>
                 <div class="portfolio-amount">₹{val['avg']:,}</div>
                 <div class="portfolio-range">₹{val['min']:,} - ₹{val['max']:,}</div>
                 <div class="portfolio-label">{key} Insurance / year</div>
             </div>
             """, unsafe_allow_html=True)
     
+    # Features Section
     st.markdown('<div class="section-header">🚀 Platform Features</div>', unsafe_allow_html=True)
     features = [
         ("🧠", "AI-Powered Predictions", "ML models trained on 100k+ records", "95% Accuracy"),
@@ -322,20 +370,21 @@ def dashboard():
         ("🛡️", "Fraud Detection", "Advanced risk assessment", "91% Recall"),
         ("📈", "Model Analytics", "Compare ML model performance", "4+ Algorithms")
     ]
-    cols = st.columns(4)
+    cols = st.columns(4, gap="medium")
     for idx, (icon, title, desc, metric) in enumerate(features):
         with cols[idx]:
             st.markdown(f"""
             <div class="feature-card">
-                <div class="feature-icon" style="font-size:1.6rem">{icon}</div>
+                <div class="feature-icon">{icon}</div>
                 <div class="feature-title">{title}</div>
                 <div class="feature-desc">{desc}</div>
-                <div class="feature-metric" style="color:#f97316; margin-top:0.3rem;">🎯 {metric}</div>
+                <div class="feature-metric">🎯 {metric}</div>
             </div>
             """, unsafe_allow_html=True)
+    
     show_history()
 
-# ==================== HEALTH INPUT (with Coverage) ====================
+# ==================== HEALTH INPUT ====================
 def health_input():
     st.markdown('<div class="card">', unsafe_allow_html=True)
     st.markdown("### 🩺 Health Insurance Details")
@@ -372,7 +421,7 @@ def health_input():
             st.markdown('<div class="error-message">❌ Model not found. Train models first.</div>', unsafe_allow_html=True)
     st.markdown('</div>', unsafe_allow_html=True)
 
-# ==================== CAR INPUT (with IDV) ====================
+# ==================== CAR INPUT ====================
 def car_input():
     st.markdown('<div class="card">', unsafe_allow_html=True)
     st.markdown("### 🚗 Car Insurance Details")
@@ -413,7 +462,7 @@ def car_input():
             st.markdown('<div class="error-message">❌ Model not found. Train models first.</div>', unsafe_allow_html=True)
     st.markdown('</div>', unsafe_allow_html=True)
 
-# ==================== LIFE INPUT (with Sum Assured) ====================
+# ==================== LIFE INPUT ====================
 def life_input():
     st.markdown('<div class="card">', unsafe_allow_html=True)
     st.markdown("### 🧬 Life Insurance Details")
@@ -451,7 +500,7 @@ def life_input():
             st.markdown('<div class="error-message">❌ Model not found. Train models first.</div>', unsafe_allow_html=True)
     st.markdown('</div>', unsafe_allow_html=True)
 
-# ==================== HOME INPUT (with Coverage) ====================
+# ==================== HOME INPUT ====================
 def home_input():
     st.markdown('<div class="card">', unsafe_allow_html=True)
     st.markdown("### 🏠 Home Insurance Details")
@@ -489,7 +538,7 @@ def home_input():
             st.markdown('<div class="error-message">❌ Model not found. Train models first.</div>', unsafe_allow_html=True)
     st.markdown('</div>', unsafe_allow_html=True)
 
-# ==================== FRAUD INPUT (unchanged) ====================
+# ==================== FRAUD INPUT ====================
 def fraud_input():
     st.markdown('<div class="card">', unsafe_allow_html=True)
     st.markdown("### 🕵️ Fraud Detection Engine")
