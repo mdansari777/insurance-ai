@@ -484,7 +484,7 @@ def life_input():
                 time.sleep(0.3)
                 df = pd.DataFrame([[age, gender, smoker, health, income, term, sa_value]],
                                  columns=['age','gender','smoker','health_status',
-                                         'annual_income','term_length','sum_assured_lakhs'])
+                                         'annual_income','term_length','coverage_amount'])
                 try:
                     pred = life_model.predict(df)[0]
                     st.markdown(f"""
@@ -663,3 +663,4 @@ elif selected == "🕵️ Fraud Detection":
     fraud_input()
 elif selected == "📈 Analytics":
     analytics()
+    
